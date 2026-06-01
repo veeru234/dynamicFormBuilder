@@ -98,7 +98,7 @@ struct TextFieldView: View {
                     )
             )
             .focused($isFocused)
-            .onChange(of: value) { _, newValue in
+            .onChange(of: value) { newValue in
                 if let maxLength = field.maxLength, newValue.count > maxLength {
                     value = String(newValue.prefix(maxLength))
                 }
@@ -125,7 +125,7 @@ struct TextFieldView: View {
                         lineWidth: 1.2
                     )
             )
-            .onChange(of: value) { _, newValue in
+            .onChange(of: value) { newValue in
                 if let maxLength = field.maxLength, newValue.count > maxLength {
                     value = String(newValue.prefix(maxLength))
                 }
@@ -152,12 +152,15 @@ struct TextFieldView: View {
                         lineWidth: 1.2
                     )
             )
-            .onChange(of: value) { _, newValue in
+            .onChange(of: value) { newValue in
+                // Allow only numbers and dot
                 let filtered = newValue.filter { $0.isNumber || $0 == "." }
-                value = filtered
-                
-                if let maxLength = field.maxLength, filtered.count > maxLength {
-                    value = String(filtered.prefix(maxLength))
+                var finalValue = filtered
+                if let maxLength = field.maxLength, finalValue.count > maxLength {
+                    finalValue = String(finalValue.prefix(maxLength))
+                }
+                if finalValue != value {
+                    value = finalValue
                 }
             }
     }
